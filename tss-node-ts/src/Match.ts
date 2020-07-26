@@ -72,9 +72,9 @@ export class Match {
     this.games[playerIndex] += 1;
     this.points[PLAYER.ONE] = 0;
     this.points[PLAYER.TWO] = 0;
-    if (this.games[playerIndex] == 6) {
+    if (this.games[playerIndex] >= 6) {
       const otherPlayerIndex = (playerIndex + 1) % 2;
-      if (this.games[otherPlayerIndex] < 5) {
+      if (this.games[playerIndex] - this.games[otherPlayerIndex] >= 2) {
         if (this.matchScore === "") {
           this.matchScore += this.score();
         } else {
