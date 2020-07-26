@@ -15,8 +15,13 @@ describe("test for class Match", () => {
     match.pointWonBy(player1);
     expect(match.score()).to.equal("0-0, 30-15");
 
-    //TODO implement logic to pass this test below:
-    // match.pointWonBy(player1);
-    // expect(match.score()).to.equal("0-0, 40-15");
+    match.pointWonBy(player1);
+    expect(match.score()).to.equal("0-0, 40-15");
+    match.pointWonBy(player2);
+    expect(match.score()).to.equal("0-0, 40-30");
+    match.pointWonBy(player2);
+    expect(match.score()).to.equal("0-0, Deuce");
+    match.pointWonBy(player1);
+    expect(match.score()).to.equal("0-0, Advantage " + player1);
   });
 });
