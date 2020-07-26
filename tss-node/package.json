@@ -1,0 +1,28 @@
+{
+  "name": "usersNodeApi",
+  "version": "1.0.0",
+  "description": "<details><summary>Users Node API</summary>",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha 'src/**/*.test.js'",
+    "tdd": "nodemon --watch 'src/**/*.js' --exec mocha 'src/**/*.test.js'",
+    "dev": "nodemon --watch 'src/**/*.js' --exec node src/server.js",
+    "build": "tsc",
+    "start": "tsc; node dist/server.js"
+  },
+  "keywords": [],
+  "author": "John Shaw <shaw_fire@yahoo.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1",
+    "nodemon": "^2.0.4",
+    "sinon": "^9.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "request": "^2.88.2"
+  }
+}
