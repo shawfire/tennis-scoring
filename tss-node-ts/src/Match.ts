@@ -1,5 +1,3 @@
-import { POINT_CONVERSION_COMPRESSED } from "constants";
-
 enum PLAYER {
   ONE,
   TWO,
@@ -22,6 +20,8 @@ export class Match {
   player1: string;
   player2: string;
   games: number[] = [0, 0];
+  sets: number[] = [0, 0];
+  matchScore: string = "";
   points: number[] = [0, 0];
   advantage: boolean[] = [false, false];
   playerLookup: Map<string, PLAYER> = new Map();
@@ -31,6 +31,10 @@ export class Match {
     this.player2 = player2;
     this.playerLookup.set(player1, PLAYER.ONE);
     this.playerLookup.set(player2, PLAYER.TWO);
+  }
+
+  getMatchScore() {
+    return this.matchScore;
   }
 
   score(): string {
@@ -68,6 +72,21 @@ export class Match {
     this.games[playerIndex] += 1;
     this.points[PLAYER.ONE] = 0;
     this.points[PLAYER.TWO] = 0;
+    if (this.games[playerIndex] == 6) {
+      const otherPlayerIndex = (playerIndex + 1) % 2;
+      if (this.games[otherPlayerIndex] < 5) {
+        if (this.matchScore === "") {
+          this.matchScore += this.score();
+        } else {
+          this.matchScore += CONSTANTS.SCORE_COMMA + this.score();
+        }
+        this.points[PLAYER.ONE] = 0;
+        this.points[PLAYER.TWO] = 0;
+        this.games[PLAYER.ONE] = 0;
+        this.games[PLAYER.TWO] = 0;
+        this.sets[playerIndex] += 1;
+      }
+    }
   }
 
   pointWonBy(player: string) {
