@@ -23,5 +23,7 @@ describe("test for class Match", () => {
     expect(match.score()).to.equal("0-0, Deuce");
     match.pointWonBy(player1);
     expect(match.score()).to.equal("0-0, Advantage " + player1);
+    match.pointWonBy(player2);
+    expect(match.score()).to.equal("0-0, Deuce");
   });
 });

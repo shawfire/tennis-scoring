@@ -11,14 +11,9 @@ enum POINTS {
   FORTY = 40,
 }
 
-enum TIE {
-  DEUCE = "Deuce",
-  ADVANTAGE = "Advantage",
-}
-
 const CONSTANTS = {
   DEUCE: "Deuce",
-  ADVANTAGE: "Advantage",
+  ADVANTAGE: "Advantage ",
   SCORE_DASH: "-",
   SCORE_COMMA: ", ",
 };
@@ -48,7 +43,17 @@ export class Match {
       this.points[PLAYER.ONE] === POINTS.FORTY &&
       this.points[PLAYER.TWO] === POINTS.FORTY
     ) {
-      return score + CONSTANTS.SCORE_COMMA + TIE.DEUCE;
+      if (this.advantage[PLAYER.ONE]) {
+        return (
+          score + CONSTANTS.SCORE_COMMA + CONSTANTS.ADVANTAGE + this.player1
+        );
+      }
+      if (this.advantage[PLAYER.TWO]) {
+        return (
+          score + CONSTANTS.SCORE_COMMA + CONSTANTS.ADVANTAGE + this.player2
+        );
+      }
+      return score + CONSTANTS.SCORE_COMMA + CONSTANTS.DEUCE;
     }
     return (
       score +
@@ -57,17 +62,21 @@ export class Match {
       CONSTANTS.SCORE_DASH +
       this.points[PLAYER.TWO]
     );
-    return score;
   }
 
   pointWonBy(player: string) {
     const playerIndex = this.playerLookup.get(player);
-    const otherPlayerIndex = playerIndex + (1 % 2);
-    if (this.points[playerIndex] === POINTS.THIRTY) {
+    const otherPlayerIndex = (playerIndex + 1) % 2;
+    if (this.points[playerIndex] === POINTS.FORTY) {
       if (this.points[otherPlayerIndex] === POINTS.FORTY) {
-      } else {
-        this.points[playerIndex] = POINTS.FORTY;
+        if (this.advantage[otherPlayerIndex]) {
+          this.advantage[otherPlayerIndex] = false;
+        } else {
+          this.advantage[playerIndex] = true;
+        }
       }
+    } else if (this.points[playerIndex] === POINTS.THIRTY) {
+      this.points[playerIndex] = POINTS.FORTY;
     } else {
       this.points[playerIndex] += POINTS.FIFTEEN;
     }
