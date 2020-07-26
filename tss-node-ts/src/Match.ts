@@ -64,16 +64,26 @@ export class Match {
     );
   }
 
+  incGameScore(playerIndex: PLAYER) {
+    this.games[playerIndex] += 1;
+    this.points[PLAYER.ONE] = 0;
+    this.points[PLAYER.TWO] = 0;
+  }
+
   pointWonBy(player: string) {
     const playerIndex = this.playerLookup.get(player);
     const otherPlayerIndex = (playerIndex + 1) % 2;
     if (this.points[playerIndex] === POINTS.FORTY) {
       if (this.points[otherPlayerIndex] === POINTS.FORTY) {
-        if (this.advantage[otherPlayerIndex]) {
+        if (this.advantage[playerIndex]) {
+          this.incGameScore(playerIndex);
+        } else if (this.advantage[otherPlayerIndex]) {
           this.advantage[otherPlayerIndex] = false;
         } else {
           this.advantage[playerIndex] = true;
         }
+      } else {
+        this.incGameScore(playerIndex);
       }
     } else if (this.points[playerIndex] === POINTS.THIRTY) {
       this.points[playerIndex] = POINTS.FORTY;
