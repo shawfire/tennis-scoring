@@ -3,7 +3,7 @@
 <details><summary>Testing the solution</summary>
 
 ```bash
-git clone
+git clone https://github.com/shawfire/tennis-scoring.git
 cd tennis-scoring/tss-node-ts
 npm install
 npm run test
