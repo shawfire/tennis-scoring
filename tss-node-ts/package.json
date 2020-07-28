@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.test.ts",
-    "tdd": "nodemon --watch 'src/**/*.ts' --exec mocha -r ts-node/register src/**/*.test.ts",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
-    "build": "tsc",
-    "start": "tsc; node dist/server.js"
+    "tdd": "nodemon --watch 'src/**/*.ts' --exec mocha -r ts-node/register src/**/*.test.ts"
   },
   "keywords": [],
   "author": "John Shaw <shaw_fire@yahoo.com>",

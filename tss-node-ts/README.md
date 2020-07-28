@@ -1,6 +1,14 @@
 # Tennis scoring app (tss) in Node.ts (TypeScript)
 
-<details><summary>TODO</summary>
+<details><summary>Testing the solution</summary>
+
+```bash
+git clone
+cd tennis-scoring/tss-node-ts
+npm install
+npm run test
+npm run tdd # During development
+```
 
 </details>
 

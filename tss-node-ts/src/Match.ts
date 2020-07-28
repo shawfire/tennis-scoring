@@ -25,6 +25,8 @@ export class Match {
   points: number[] = [0, 0];
   advantage: boolean[] = [false, false];
   playerLookup: Map<string, PLAYER> = new Map();
+  inTieBreaker = false;
+  tieBreakerScore: string;
 
   constructor(player1: string, player2: string) {
     this.player1 = player1;
@@ -68,46 +70,79 @@ export class Match {
     );
   }
 
-  incGameScore(playerIndex: PLAYER) {
-    this.games[playerIndex] += 1;
+  setWonBy(playerIndex: PLAYER) {
     this.points[PLAYER.ONE] = 0;
     this.points[PLAYER.TWO] = 0;
-    if (this.games[playerIndex] >= 6) {
-      const otherPlayerIndex = (playerIndex + 1) % 2;
-      if (this.games[playerIndex] - this.games[otherPlayerIndex] >= 2) {
-        if (this.matchScore === "") {
-          this.matchScore += this.score();
-        } else {
-          this.matchScore += CONSTANTS.SCORE_COMMA + this.score();
-        }
-        this.points[PLAYER.ONE] = 0;
-        this.points[PLAYER.TWO] = 0;
-        this.games[PLAYER.ONE] = 0;
-        this.games[PLAYER.TWO] = 0;
-        this.sets[playerIndex] += 1;
-      }
+    if (this.matchScore === "") {
+      this.matchScore += this.score();
+    } else {
+      this.matchScore += CONSTANTS.SCORE_COMMA + this.score();
     }
+    if (this.inTieBreaker) {
+      this.matchScore += this.tieBreakerScore;
+      this.inTieBreaker = false;
+    }
+    this.games[PLAYER.ONE] = 0;
+    this.games[PLAYER.TWO] = 0;
+    this.sets[playerIndex] += 1;
   }
 
-  pointWonBy(player: string) {
-    const playerIndex = this.playerLookup.get(player);
-    const otherPlayerIndex = (playerIndex + 1) % 2;
+  gameWonBy(playerIndex: PLAYER, otherPlayerIndex: PLAYER) {
+    this.games[playerIndex] += 1;
+
+    if (this.inTieBreaker) {
+      this.tieBreakerScore =
+        " (" + this.points[PLAYER.ONE] + "," + this.points[PLAYER.TWO] + ")";
+      this.setWonBy(playerIndex);
+    } else if (this.games[playerIndex] >= 6) {
+      if (this.games[playerIndex] - this.games[otherPlayerIndex] >= 2) {
+        this.setWonBy(playerIndex);
+      }
+    }
+    if (this.games[PLAYER.ONE] === 6 && this.games[PLAYER.ONE] === 6) {
+      this.inTieBreaker = true;
+    }
+    this.points[PLAYER.ONE] = 0;
+    this.points[PLAYER.TWO] = 0;
+  }
+
+  gamePointWonBy(playerIndex: PLAYER, otherPlayerIndex: PLAYER) {
     if (this.points[playerIndex] === POINTS.FORTY) {
       if (this.points[otherPlayerIndex] === POINTS.FORTY) {
         if (this.advantage[playerIndex]) {
-          this.incGameScore(playerIndex);
+          this.gameWonBy(playerIndex, otherPlayerIndex);
         } else if (this.advantage[otherPlayerIndex]) {
           this.advantage[otherPlayerIndex] = false;
         } else {
           this.advantage[playerIndex] = true;
         }
       } else {
-        this.incGameScore(playerIndex);
+        this.gameWonBy(playerIndex, otherPlayerIndex);
       }
     } else if (this.points[playerIndex] === POINTS.THIRTY) {
       this.points[playerIndex] = POINTS.FORTY;
     } else {
       this.points[playerIndex] += POINTS.FIFTEEN;
+    }
+  }
+
+  tieBreakerPointWonBy(playerIndex: PLAYER, otherPlayerIndex: PLAYER) {
+    this.points[playerIndex] += 1;
+    if (
+      this.points[playerIndex] >= 7 &&
+      this.points[playerIndex] - this.points[otherPlayerIndex] >= 2
+    ) {
+      this.gameWonBy(playerIndex, otherPlayerIndex);
+    }
+  }
+
+  pointWonBy(player: string) {
+    const playerIndex = this.playerLookup.get(player);
+    const otherPlayerIndex = (playerIndex + 1) % 2;
+    if (this.inTieBreaker) {
+      this.tieBreakerPointWonBy(playerIndex, otherPlayerIndex);
+    } else {
+      this.gamePointWonBy(playerIndex, otherPlayerIndex);
     }
   }
 }
